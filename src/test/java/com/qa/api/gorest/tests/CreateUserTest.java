@@ -56,7 +56,7 @@ public class CreateUserTest extends BaseTest{
 		System.out.println("Gender = "+gender);
 		System.out.println("Status = "+status);
 		
-		System.out.println("===================================================================================");
+		System.out.println("==================================================================================");
 		
 	}
 	
