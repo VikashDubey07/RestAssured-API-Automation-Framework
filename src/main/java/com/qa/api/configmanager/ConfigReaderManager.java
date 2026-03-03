@@ -11,7 +11,20 @@ public class ConfigReaderManager {
 		
 		static
 		{
-			InputStream input= ConfigReaderManager.class.getClassLoader().getResourceAsStream("config/config.properties");
+			
+			// mvn clean install -Denv=qa
+			// mvn clean install -Denv=dev
+
+			// mvn clean install -- if env is not given, then run test cases on QA env by default.
+			// env = environment variable (system)
+
+			String envName = System.getProperty("env", "prod");// it sets the env by default to qa if dont pass any env
+			
+			System.out.println("Running tests on env: " + envName);
+			String fileName = "config_"+envName+".properties"; // config_qa.properties
+			InputStream input= ConfigReaderManager.class.getClassLoader().getResourceAsStream(fileName);
+			
+			//InputStream input= ConfigReaderManager.class.getClassLoader().getResourceAsStream("config/config.properties");
 			if(input!=null)
 			{
 				try {

@@ -5,6 +5,7 @@ import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Listeners;
 
 import com.aventstack.chaintest.plugins.ChainTestListener;
+import com.qa.api.configmanager.ConfigReaderManager;
 import com.qa.api.restclient.RestClient;
 
 import io.restassured.RestAssured;
@@ -16,6 +17,9 @@ public class BaseTest {
 	
 	
 	//**********************  Maintain Base URL ****************************//
+	
+	protected  static String GOREST_BASE_URL_DevEnv = ""; //Variable to read configuration from config_qa.properties
+	
 	
 	protected final static String GOREST_BASE_URL ="https://gorest.co.in";
 	protected final static String CONTACTS_BASE_URL ="https://thinking-tester-contact-list.herokuapp.com";
@@ -52,9 +56,11 @@ public class BaseTest {
 	
 	
 	@BeforeSuite
-	public void setupAllureReport()
+	public void setupAllureReportAndEnvSpecficPropFileReading()
 	{
 	    RestAssured.filters(new AllureRestAssured());
+	    GOREST_BASE_URL_DevEnv = ConfigReaderManager.get("baseUrl").trim(); //To reading configuration from config_qa.properties
+	    
 	}
 	
 	@BeforeTest

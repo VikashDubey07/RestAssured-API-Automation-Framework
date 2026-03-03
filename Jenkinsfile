@@ -30,7 +30,7 @@ pipeline {
             steps {
                 catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
                     git 'https://github.com/VikashDubey07/RestAssured-API-Automation-Framework.git'
-                    bat "mvn clean test -Dsurefire.suiteXmlFiles=src/test/resources/TestRunner/goRestApi.xml"
+                    bat "mvn clean test -Dsurefire.suiteXmlFile=src/test/resources/TestRunner/goRestApi.xml -Denv=qa"
                 }
             }
         }
@@ -73,7 +73,7 @@ pipeline {
             steps {
                 catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
                     git 'https://github.com/VikashDubey07/RestAssured-API-Automation-Framework.git'
-                    bat "mvn clean test -Dsurefire.suiteXmlFiles=src/test/resources/TestRunner/goRestApi.xml"
+                    bat "mvn clean test -Dsurefire.suiteXmlFile=src/test/resources/TestRunner/goRestApi.xml -Denv=stage"
                 }
             }
         }
