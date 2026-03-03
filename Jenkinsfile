@@ -1,86 +1,120 @@
 pipeline {
     agent any
 
-    stages {
+    tools {
+        maven 'maven'
+    }
 
-        stage('Start') {
-            steps {
-                echo 'Start Stage'
-            }
-        }
+    stages {
 
         stage('Build') {
             steps {
-                echo 'Build Stage'
+                git 'https://github.com/jglick/simple-maven-project-with-tests.git'
+                bat "mvn -Dmaven.test.failure.ignore=true clean package"
+            }
+            post {
+                success {
+                    junit '**/target/surefire-reports/TEST-*.xml'
+                    archiveArtifacts 'target/*.jar'
+                }
             }
         }
 
-        stage('Run Unit Test') {
+        stage("Deploy to QA") {
             steps {
-                echo 'Run Unit Test Stage'
+                echo("deploy to qa done")
             }
         }
 
-        stage('Run Integration Test') {
+        stage('Regression API Automation Tests') {
             steps {
-                echo 'Run Integration Test Stage'
+                catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                    git 'https://github.com/VikashDubey07/RestAssured-API-Automation-Framework.git'
+                    bat "mvn clean test -Dsurefire.suiteXmlFiles=src/test/resources/TestRunner/goRestApi.xml"
+                }
             }
         }
 
-        stage('Deploy to Dev') {
+        stage('Publish Regression Allure Reports') {
             steps {
-                echo 'Deploy to Dev Stage'
+                script {
+                    allure([
+                        includeProperties: false,
+                        jdk: '',
+                        properties: [],
+                        reportBuildPolicy: 'ALWAYS',
+                        results: [[path: 'allure-results']]
+                    ])
+                }
             }
         }
 
-        stage('Deploy to QA') {
+        stage('Publish Regression ChainTest Report') {
             steps {
-                echo 'Deploy to QA Stage'
+                publishHTML([
+                    allowMissing: false,
+                    alwaysLinkToLastBuild: false,
+                    keepAll: true,
+                    reportDir: 'target/chaintest',
+                    reportFiles: 'Index.html',
+                    reportName: 'HTML API Regression ChainTest Report',
+                    reportTitles: ''
+                ])
             }
         }
 
-        stage('Run Regression') {
+        stage("Deploy to Stage") {
             steps {
-                echo 'Run Regression Stage'
+                echo("deploy to Stage")
             }
         }
 
-        stage('Deploy to Stage') {
+        stage('Sanity API Automation Test') {
             steps {
-                echo 'Deploy to Stage Environment'
+                catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                    git 'https://github.com/VikashDubey07/RestAssured-API-Automation-Framework.git'
+                    bat "mvn clean test -Dsurefire.suiteXmlFiles=src/test/resources/TestRunner/goRestApi.xml"
+                }
+            }
+        }
+        
+        
+        
+        stage('Publish Sanity Allure Reports') {
+            steps {
+                script {
+                    allure([
+                        includeProperties: false,
+                        jdk: '',
+                        properties: [],
+                        reportBuildPolicy: 'ALWAYS',
+                        results: [[path: 'allure-results']]
+                    ])
+                }
+            }
+        }
+        
+        
+        stage('Publish Sanity ChainTest Report') {
+            steps {
+                publishHTML([
+                    allowMissing: false,
+                    alwaysLinkToLastBuild: false,
+                    keepAll: true,
+                    reportDir: 'target/chaintest',
+                    reportFiles: 'Index.html',
+                    reportName: 'HTML API Regression ChainTest Report',
+                    reportTitles: ''
+                ])
+            }
+        }
+        
+
+        stage("Deploy to prod") {
+            steps {
+                echo("deploy to prod")
             }
         }
 
-        stage('Run Sanity API Test') {
-            steps {
-                echo 'Run Sanity API Test Stage'
-            }
-        }
-
-        stage('Deploy to UAT') {
-            steps {
-                echo 'Deploy to UAT Stage'
-            }
-        }
-
-        stage('Run UAT API Test') {
-            steps {
-                echo 'Run UAT API Test Stage'
-            }
-        }
-
-        stage('Deploy to PROD') {
-            steps {
-                echo 'Deploy to Production Stage'
-            }
-        }
-
-        stage('End') {
-            steps {
-                echo 'End Stage'
-            }
-        }
     }
-
- 
 }
