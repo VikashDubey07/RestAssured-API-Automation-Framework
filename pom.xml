@@ -113,6 +113,14 @@
 			<version>5.2.5</version>
 		</dependency>
 
+
+		<!-- Source: https://mvnrepository.com/artifact/org.wiremock/wiremock -->
+		<dependency>
+			<groupId>org.wiremock</groupId>
+			<artifactId>wiremock</artifactId>
+			<version>3.13.1</version>
+		</dependency>
+
 	</dependencies>
 
 
@@ -139,7 +147,7 @@
 					<suiteXmlFiles>
 						<!--<suiteXmlFile>src/test/resources/testng_regression.xml</suiteXmlFile> -->
 						<suiteXmlFile>${suiteXmlFile}</suiteXmlFile>
-						
+
 					</suiteXmlFiles>
 				</configuration>
 			</plugin>

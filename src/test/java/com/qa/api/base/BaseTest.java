@@ -1,11 +1,13 @@
 package com.qa.api.base;
 
+import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Listeners;
 
 import com.aventstack.chaintest.plugins.ChainTestListener;
 import com.qa.api.configmanager.ConfigReaderManager;
+import com.qa.api.mocking.WireMockSetup;
 import com.qa.api.restclient.RestClient;
 
 import io.restassured.RestAssured;
@@ -27,6 +29,7 @@ public class BaseTest {
 	protected final static String BASIC_AUTH_BASE_URL ="https://thinking-tester-contact-list.herokuapp.com";
 	protected final static String PRODUCTS_BASE_URL ="https://fakestoreapi.com";
 	protected final static String AMADEUS_OAUTH2_BASE_URL ="https://test.api.amadeus.com";
+	protected final static String MOCK_SERVER_BASE_URL ="http://localhost:8089";
 
 	
 	
@@ -67,8 +70,16 @@ public class BaseTest {
 	public void setUp()
 	{
 		restClient = new RestClient();
+		WireMockSetup.startWireMockeServer();
 	}
 	
+	
+	@AfterTest
+	public void stopWireMockServer()
+	{
+		
+		WireMockSetup.stopWireMockServer();
+	}
 	
 
 	
